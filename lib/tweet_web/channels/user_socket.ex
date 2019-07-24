@@ -2,7 +2,10 @@ defmodule TweetWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", TweetWeb.RoomChannel
+  channel("room:lobby", TweetWeb.RoomChannel)
+
+  ## Transports
+  transport :websocket, Phoenix.Transports.WebSocket
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
