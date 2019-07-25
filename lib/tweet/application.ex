@@ -11,9 +11,10 @@ defmodule Tweet.Application do
       # Start the Ecto repository
       Tweet.Repo,
       # Start the endpoint when the application starts
-      TweetWeb.Endpoint
+      TweetWeb.Endpoint,
       # Starts a worker by calling: Tweet.Worker.start_link(arg)
       # {Tweet.Worker, arg},
+      {Redix, host: "localhost", name: :redix}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -21,16 +21,19 @@ var channel = socket.channel('room:lobby', {}); // connect to "room"
 channel.on('shout', function (payload) { // listen to the 'shout' event
   var li = document.createElement("li"); // create new list item DOM element
   var name = payload.name || 'Anonymous';    // get name from payload or set default
+  var message = payload.message || '< retweeted >';    // get name from payload or set default
   if(payload.isRe){
-    li.innerHTML = '<b>' + name + '</b>: ' +
-                   "<div><div class='quote'>" +
-                   payload.reMessage +
-                   "</div><div>" +
-                   payload.message
-                   + "</div></div>";
+    li.setAttribute('data-person', payload.reName);
+    li.setAttribute('data-message',payload.reMessage);
+    li.innerHTML = '<b>' + name + '</b>: ' + message +
+                   "<div><div class='quote'> (Quote)" +
+                   '<b>' + payload.reName + '</b>: ' + payload.reMessage +
+                   "</div></div>";
   }
   else {
-    li.innerHTML = '<b>' + name + '</b>: ' + payload.message;
+    li.setAttribute('data-person', name);
+    li.setAttribute('data-message', message);
+    li.innerHTML = '<b>' + name + '</b>: ' + message;
   }
   li.addEventListener('click', function (event) {
     if(forcusLi != this) {
@@ -59,7 +62,7 @@ var msg = document.getElementById('msg');            // message input field
 
 // "listen" for the [Enter] keypress event to send a message:
 msg.addEventListener('keypress', function (event) {
-  if (event.keyCode == 13 && msg.value.length > 0 && msg.value.length < 140) { // don't sent empty msg and less than 140 characters
+  if (event.keyCode == 13 && msg.value.length < 140) { // don't sent empty msg and less than 140 characters
     if(forcusLi == undefined) {
       channel.push('shout', { // send the message to the server
         name: name.value,     // get value of "name" of person sending the message
@@ -72,9 +75,11 @@ msg.addEventListener('keypress', function (event) {
         name: name.value,     // get value of "name" of person sending the message
         message: msg.value,    // get message text (value) from msg input field.
         isRe: true,
-        reMessage: forcusLi.innerHTML
+        reMessage: forcusLi.getAttribute('data-message'),
+        reName: forcusLi.getAttribute('data-person')
       });
     }
+    console.log(forcusLi);
     msg.value = '';         // reset the message input field for next message.
   }
 });
