@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Tweet · Phoenix Framework</title>
+    <title>Tweet</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
@@ -12,12 +12,12 @@
     <header>
       <section class="container">
         <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-          </ul>
+          <a href="https://bxdoan.com/" class="tweet-logo">
+            <img src="<%= Routes.static_path(@conn, "/images/bxd.png") %>" height="40" width="40" alt="BXD Logo"/>
+          </a>
         </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
+        <a href="http://tweet.bxdoan.com/" class="tweet-logo">
+          <img src="<%= Routes.static_path(@conn, "/images/tweet.png") %>" height="40" width="40" alt="Tweet Logo"/>
         </a>
       </section>
     </header>

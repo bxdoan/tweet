@@ -18,20 +18,21 @@ import socket from "./socket"
 
 var channel = socket.channel('room:lobby', {}); // connect to "room"
 
-channel.on('shout', function (payload) { // listen to the 'shout' event
-  var li = document.createElement("li"); // create new list item DOM element
-  var name = payload.name || 'Anonymous';    // get name from payload or set default
-  var message = payload.message || '< retweeted >';    // get name from payload or set default
+// listen to the 'shout' event
+channel.on('shout', function (payload) {
+  var li = document.createElement("li");
+  var name = payload.name || 'Anonymous';
+  var message = payload.message || ' retweeted';
   if(payload.isRe){
-    li.setAttribute('data-person', payload.reName);
-    li.setAttribute('data-message',payload.reMessage);
+    li.setAttribute('data-name', payload.reName);
+    li.setAttribute('data-message', payload.reMessage);
     li.innerHTML = '<b>' + name + '</b>: ' + message +
                    "<div><div class='quote'> (Quote)" +
                    '<b>' + payload.reName + '</b>: ' + payload.reMessage +
                    "</div></div>";
   }
   else {
-    li.setAttribute('data-person', name);
+    li.setAttribute('data-name', name);
     li.setAttribute('data-message', message);
     li.innerHTML = '<b>' + name + '</b>: ' + message;
   }
@@ -49,38 +50,38 @@ channel.on('shout', function (payload) { // listen to the 'shout' event
   if($(ul).children().length == 10) {
     $(ul).children().last().remove();
   }
-  ul.prepend(li);                 // append to list
+  ul.prepend(li);
   console.log($(ul));
 });
 
 channel.join(); // join the channel.
 
 var forcusLi = undefined;
-var ul = document.getElementById('msg-list');        // list of messages.
-var name = document.getElementById('name');          // name of message sender
-var msg = document.getElementById('msg');            // message input field
+var ul = document.getElementById('msg-list');
+var name = document.getElementById('name');
+var msg = document.getElementById('msg');
 
 // "listen" for the [Enter] keypress event to send a message:
 msg.addEventListener('keypress', function (event) {
-  if (event.keyCode == 13 && msg.value.length < 140) { // don't sent empty msg and less than 140 characters
-    if(forcusLi == undefined) {
-      channel.push('shout', { // send the message to the server
-        name: name.value,     // get value of "name" of person sending the message
-        message: msg.value,    // get message text (value) from msg input field.
+  if (event.keyCode == 13 && msg.value.length < 140) {
+    if(forcusLi == undefined && msg.value.length > 0) {
+      channel.push('shout', {
+        name: name.value,
+        message: msg.value,
         isRe: false
       });
     }
     else {
-      channel.push('shout', { // send the message to the server
-        name: name.value,     // get value of "name" of person sending the message
-        message: msg.value,    // get message text (value) from msg input field.
+      channel.push('shout', {
+        name: name.value,
+        message: msg.value,
         isRe: true,
         reMessage: forcusLi.getAttribute('data-message'),
-        reName: forcusLi.getAttribute('data-person')
+        reName: forcusLi.getAttribute('data-name')
       });
     }
     console.log(forcusLi);
-    msg.value = '';         // reset the message input field for next message.
+    msg.value = '';
   }
 });
 
