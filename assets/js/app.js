@@ -23,18 +23,18 @@ channel.on('shout', function (payload) {
   var li = document.createElement("li");
   var name = payload.name || 'Anonymous';
   var message = payload.message || ' retweeted';
+  var num_retw = payload.num_retw || '0';
+  var index = payload.index;
   if(payload.isRe){
-    li.setAttribute('data-name', payload.reName);
-    li.setAttribute('data-message', payload.reMessage);
-    li.innerHTML = '<b>' + name + '</b>: ' + message +
-                   "<div><div class='quote'> (Quote)" +
-                   '<b>' + payload.reName + '</b>: ' + payload.reMessage +
-                   "</div></div>";
+    li.setAttribute('index', index);
+    li.setAttribute('num_retw', num_retw);
   }
   else {
     li.setAttribute('data-name', name);
     li.setAttribute('data-message', message);
-    li.innerHTML = '<b>' + name + '</b>: ' + message;
+    li.setAttribute('num_retw', num_retw);
+    li.setAttribute('index', index);
+    li.innerHTML = '<' + num_retw + ' retweeted> ' + '<b>' + name + '</b>: ' + message;
   }
   li.addEventListener('click', function (event) {
     if(forcusLi != this) {
@@ -53,6 +53,10 @@ channel.on('shout', function (payload) {
   ul.prepend(li);
   console.log($(ul));
 });
+
+channel.on('clear', function () {
+  $("ul").empty();
+})
 
 channel.join(); // join the channel.
 
@@ -76,12 +80,15 @@ msg.addEventListener('keypress', function (event) {
         name: name.value,
         message: msg.value,
         isRe: true,
-        reMessage: forcusLi.getAttribute('data-message'),
-        reName: forcusLi.getAttribute('data-name')
+        index: forcusLi.getAttribute('index'),
+        num_retw: forcusLi.getAttribute('num_retw')
       });
     }
     console.log(forcusLi);
     msg.value = '';
+    $("ul").empty();
+    $("ul li.actived").removeClass("actived");
+    forcusLi = undefined;
   }
 });
 
